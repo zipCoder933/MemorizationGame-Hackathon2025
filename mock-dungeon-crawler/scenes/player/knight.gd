@@ -16,6 +16,7 @@ const SPEED = 300;
 const TURN_SPEED = 5;
 var targetRotation:float;
 const ROTATION_LERP_SPEED = 0.2;
+const PLAYER_STEER_MOUSE:bool = true
 
 
 func _ready():
@@ -42,19 +43,25 @@ func _physics_process(delta: float) -> void:
 	#for immersive third person movement
 	
 	var forward = transform.basis.z.normalized()  # Godot's "forward" is -Z
-	#var forward = Vector3.FORWARD.rotated(Vector3.RIGHT, phantom_camera_3d.get_third_person_rotation().x).rotated(Vector3.UP, phantom_camera_3d.get_third_person_rotation().y).normalized()
-	
+
 	if(movement.z == 0):
 		rotation.y = lerp_angle(rotation.y , targetRotation, delta * TURN_SPEED)
 		linear_velocity.x = forward.x * (abs(movement.x) * SPEED * delta)
 		linear_velocity.z = forward.z * (abs(movement.x) * SPEED * delta)
-	elif(movement.z < 0):
-		rotation.y = lerp_angle(rotation.y , targetRotation, delta * TURN_SPEED)
-		linear_velocity.x = forward.x * (abs(movement.z) * SPEED * delta)
-		linear_velocity.z = forward.z * (abs(movement.z) * SPEED * delta)
 	else:
-		targetRotation = rotation.y
-		rotation.y += movement.x * movement.z * delta * TURN_SPEED
+		if(PLAYER_STEER_MOUSE):
+			var steering = (movement.x * movement.z * PI/2)
+			if(movement.z < 0):
+				targetRotation = phantom_camera_3d.get_third_person_rotation().y + steering
+			else:
+				targetRotation = phantom_camera_3d.get_third_person_rotation().y + PI + steering
+			rotation.y = lerp_angle(rotation.y , targetRotation, delta * TURN_SPEED)
+		else:
+			if(movement.z >= 0):
+				targetRotation = rotation.y
+				rotation.y += movement.x * movement.z * delta * TURN_SPEED
+			else:
+				rotation.y = lerp_angle(rotation.y , targetRotation, delta * TURN_SPEED)
 		linear_velocity.x = forward.x * (abs(movement.z) * SPEED * delta)
 		linear_velocity.z = forward.z * (abs(movement.z) * SPEED * delta)
 
