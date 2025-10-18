@@ -1,0 +1,51 @@
+[gd_scene load_steps=4 format=3 uid="uid://c0tbi4f8vqcui"]
+
+[ext_resource type="Script" uid="uid://cx3ghm65puyec" path="res://scenes/UI/Menu/mainmenu.gd" id="1_2ptl4"]
+[ext_resource type="FontFile" uid="uid://3gfsi0v6kg7j" path="res://fonts/NewRocker-Regular.ttf" id="2_7pbsb"]
+
+[sub_resource type="Theme" id="Theme_0kb7d"]
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_0kb7d")
+script = ExtResource("1_2ptl4")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 0
+offset_right = 1152.0
+offset_bottom = 648.0
+
+[node name="CenterContainer" type="CenterContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel/CenterContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/CenterContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_7pbsb")
+theme_override_font_sizes/font_size = 40
+text = "Cogni-crawl"
+
+[node name="Start_button" type="Button" parent="Panel/CenterContainer/VBoxContainer"]
+layout_mode = 2
+text = "Start"
+
+[node name="Options_button" type="Button" parent="Panel/CenterContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+text = "Options"
+
+[node name="Quit_button" type="Button" parent="Panel/CenterContainer/VBoxContainer"]
+layout_mode = 2
+text = "Quit"
