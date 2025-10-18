@@ -26,7 +26,8 @@ func _process(delta:float):
 	var screen_size = get_viewport().get_visible_rect().size
 	var mouse_pos = get_viewport().get_mouse_position()
 	var normalized_pos = -((mouse_pos / screen_size) * 2.0 - Vector2(1, 1))
-	cameraHorizontalOffset = lerp_angle(cameraHorizontalOffset, rotation.y, cameraHorizontalOffsetLerp)
+	if(movement.z >= 0):
+		cameraHorizontalOffset = lerp_angle(cameraHorizontalOffset, rotation.y, cameraHorizontalOffsetLerp)
 	camRotation.y = 180 + rad_to_deg(cameraHorizontalOffset) + (normalized_pos.x * cameraSensitivity)
 	camRotation.x = -20 + (normalized_pos.y * cameraSensitivity)
 	phantom_camera_3d.set_third_person_rotation_degrees(camRotation)
@@ -40,8 +41,8 @@ func _physics_process(delta: float) -> void:
 
 	#for immersive third person movement
 	
-	#var forward = transform.basis.z.normalized()  # Godot's "forward" is -Z
-	var forward = Vector3.FORWARD.rotated(Vector3.RIGHT, phantom_camera_3d.get_third_person_rotation().x).rotated(Vector3.UP, phantom_camera_3d.get_third_person_rotation().y).normalized()
+	var forward = transform.basis.z.normalized()  # Godot's "forward" is -Z
+	#var forward = Vector3.FORWARD.rotated(Vector3.RIGHT, phantom_camera_3d.get_third_person_rotation().x).rotated(Vector3.UP, phantom_camera_3d.get_third_person_rotation().y).normalized()
 	
 	if(movement.z == 0):
 		rotation.y = lerp_angle(rotation.y , targetRotation, delta * TURN_SPEED)

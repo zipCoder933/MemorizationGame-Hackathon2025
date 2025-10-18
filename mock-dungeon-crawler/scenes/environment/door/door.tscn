@@ -24,3 +24,4 @@ shape = SubResource("BoxShape3D_v45ce")
 [node name="trigger" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
 shape = SubResource("SphereShape3D_iheto")
+disabled = true

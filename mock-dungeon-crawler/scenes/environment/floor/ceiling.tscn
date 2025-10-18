@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=3 uid="uid://bqerhlohp8cys"]
+
+[ext_resource type="Texture2D" uid="uid://bbnyyuk1mx5sj" path="res://assets/environment/Demo - PS1 Dungeon Pack/Textures/Ceiling_Texture.png" id="1_iy3dr"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_iy3dr"]
+flip_faces = true
+size = Vector2(100, 100)
+orientation = 1
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_okiks"]
+albedo_texture = ExtResource("1_iy3dr")
+uv1_triplanar = true
+
+[node name="ceiling" type="Node3D"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("QuadMesh_iy3dr")
+surface_material_override/0 = SubResource("StandardMaterial3D_okiks")
