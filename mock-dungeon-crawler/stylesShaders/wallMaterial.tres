@@ -1,10 +1,9 @@
-[gd_resource type="StandardMaterial3D" load_steps=3 format=3 uid="uid://cn2d8q6ur8fya"]
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://cn2d8q6ur8fya"]
 
-[ext_resource type="Texture2D" uid="uid://bcxfuhvg2pxis" path="res://assets/environment/texture/stylized-stone-wall-floor01-231025_BaseColor.png" id="1_ymrq3"]
-[ext_resource type="Texture2D" uid="uid://ce13cpotvoqfw" path="res://assets/environment/texture/stylized-stone-wall-floor01-231025_Normal.png" id="2_5uupp"]
+[ext_resource type="Texture2D" uid="uid://clu24o2yuxdla" path="res://assets/environment/walls/seaworn_stone_tiles_diff_4k.jpg" id="1_kv3ht"]
 
 [resource]
-albedo_texture = ExtResource("1_ymrq3")
+albedo_texture = ExtResource("1_kv3ht")
 normal_enabled = true
-normal_texture = ExtResource("2_5uupp")
+uv1_scale = Vector3(0.165, 0.165, 0.165)
 uv1_triplanar = true

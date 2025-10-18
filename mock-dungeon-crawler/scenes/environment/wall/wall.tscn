@@ -2,21 +2,17 @@
 
 [ext_resource type="Script" uid="uid://bq3yqqr70ib7s" path="res://scenes/environment/wall/wall.gd" id="1_2ktk7"]
 [ext_resource type="Material" uid="uid://cn2d8q6ur8fya" path="res://stylesShaders/wallMaterial.tres" id="1_wykyb"]
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_2ktk7"]
-size = Vector3(1, 4.0075927, 4)
-
-[sub_resource type="BoxMesh" id="BoxMesh_2ktk7"]
-size = Vector3(1, 4, 4)
+[ext_resource type="Shape3D" uid="uid://debsehn4k3emq" path="res://scenes/environment/wall/wall.shape" id="2_brirp"]
+[ext_resource type="BoxMesh" uid="uid://wboccomm4fw2" path="res://scenes/environment/wall/wall_shape.res" id="2_xe0pg"]
 
 [node name="wall" type="StaticBody3D"]
 script = ExtResource("1_2ktk7")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.000105, 0)
-shape = SubResource("BoxShape3D_2ktk7")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
+shape = ExtResource("2_brirp")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.0030422, 0)
-mesh = SubResource("BoxMesh_2ktk7")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
+mesh = ExtResource("2_xe0pg")
 surface_material_override/0 = ExtResource("1_wykyb")
