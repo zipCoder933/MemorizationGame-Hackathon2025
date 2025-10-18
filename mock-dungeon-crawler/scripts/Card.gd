@@ -11,5 +11,5 @@ func _init(_type: String, _question: String, _answer: String, _tags: Array):
 	answer = _answer
 	tags = _tags
 
-func string() -> String:
+func toString() -> String:
 	return "%s: %s = %s [%s]" % [type, question, answer, ", ".join(tags)]

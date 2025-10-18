@@ -4,7 +4,7 @@
   "goal_answer_speed_sec": 2,
   "dungeons": [
 	{
-		"name": "The Treble Dungeon",
+		"name": "Dungeon 1",
 		"theme": "Jungle",
 		"boss_name": "Bossmania",
 		"themed_cards": ["treble-cleft"],
@@ -12,7 +12,7 @@
 		"complete_drill_levels": 2
 	},
 	{
-		"name": "The Base Dungeon",
+		"name": "Dungeon 2",
 		"theme": "Volcanic",
 		"boss_name": "Da Boss",
 		"themed_cards": ["base-cleft"],

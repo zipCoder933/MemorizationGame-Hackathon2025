@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://dyfckx6o8pevt"]
-
-[ext_resource type="Script" uid="uid://e7w6qsc3hve7" path="res://scripts/cards/CardsHandler.gd" id="1_a202f"]
-
-[node name="GameManager" type="Node3D"]
-script = ExtResource("1_a202f")
