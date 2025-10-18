@@ -1,0 +1,16 @@
+{
+  "Cards": [
+    {
+      "Type": "text",
+      "Question": "5+3",
+      "Answer": 8,
+      "Tags": ["addition"]
+    },
+    {
+      "Type": "image",
+      "Question": "/image.png",
+      "Answer": "A",
+      "Tags": ["treble"]
+    }
+  ]
+}

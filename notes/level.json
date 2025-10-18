@@ -1,0 +1,29 @@
+{
+  "seed": 13242,
+  "starting_answer_speed_sec": 10,
+  "goal_answer_speed_sec": 2,
+  "dungeons": [
+    {
+        "name": "The Treble Dungeon",
+        "theme": "Jungle",
+        "boss_name": "Bossmania",
+        "themed_cards": ["treble-cleft"],
+        "themed_drill_levels": 3,
+        "complete_drill_levels": 2
+    },
+    {
+        "name": "The Base Dungeon",
+        "theme": "Volcanic",
+        "boss_name": "Da Boss",
+        "themed_cards": ["base-cleft"],
+        "themed_drill_levels": 3,
+        "complete_drill_levels": 2
+    }
+  ],
+  "final_dungeon": {
+    "name": "The Final Dungeon",
+    "theme": "Heavenly",
+    "complete_drill_levels": 3,
+    "boss_name": "The one above all"
+  }
+}
