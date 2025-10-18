@@ -1,0 +1,30 @@
+[gd_scene load_steps=7 format=3 uid="uid://dev0s3klfq4pf"]
+
+[ext_resource type="Texture2D" uid="uid://c4u1k12di728e" path="res://assets/environment/Demo - PS1 Dungeon Pack/Textures/Floor_Texture.png" id="1_kuqtn"]
+[ext_resource type="Script" uid="uid://8cg6frhx5ef7" path="res://scenes/environment/floor/floor.gd" id="1_whr1e"]
+[ext_resource type="Texture2D" uid="uid://c2rkmu25vgoup" path="res://assets/environment/Demo - PS1 Dungeon Pack/Textures/Floor_Texture_normal.png" id="2_whr1e"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_ivaed"]
+size = Vector2(50, 50)
+orientation = 1
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4ccit"]
+albedo_texture = ExtResource("1_kuqtn")
+normal_enabled = true
+normal_texture = ExtResource("2_whr1e")
+uv1_triplanar = true
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_kuqtn"]
+
+[node name="floor" type="StaticBody3D"]
+script = ExtResource("1_whr1e")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.92996806, 0.00054480135, -0.6161086)
+mesh = SubResource("QuadMesh_ivaed")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_4ccit")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(50, 0, 0, 0, 50, 0, 0, 0, 50, 0, -25, 0)
+shape = SubResource("BoxShape3D_kuqtn")
