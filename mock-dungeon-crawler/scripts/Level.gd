@@ -10,7 +10,7 @@ var theme: LevelTheme = LevelTheme.DUNGEON
 var boss_name: String = ""          # default empty
 var time_to_answer_sec: float = 30  # default 30 sec
 var levelType: LevelType = LevelType.STANDARD
-var cardTags: Array[String] = []
+var cardTags: Array[String] = [] #If we dont specify tags, we just use all of them!!!
 
 # Constructor
 func _init(_name: String, _theme: String, _levelType: LevelType = LevelType.STANDARD, _boss_name: String = "", _time_to_answer_sec: float = 30.0, _cardTags: Array[String] = []):
@@ -33,6 +33,6 @@ func toString() -> String:
 	var theme_name = LevelTheme.keys()[theme]
 	var type_name = LevelType.keys()[levelType]
 
-	return "Level: %s | Theme: %s | Type: %s | Boss: %s | Time: %.2f | Tags: [%s]" % [
-		name, theme_name, type_name, boss_name, time_to_answer_sec, ", ".join(cardTags)
+	return "Level: \"%s\" |\t Time-Sec: %.2f |\t Theme: %s |\t Level-Type: %s |\t Boss-name: \"%s\" |\t Card-Tags: [%s]" % [
+		level_name, time_to_answer_sec, theme_name, type_name, boss_name,  ", ".join(cardTags)
 	]
