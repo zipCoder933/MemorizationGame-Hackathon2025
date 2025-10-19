@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="MockDungeonCrawler"
-run/main_scene="uid://vi8uw630u8a7"
+run/main_scene="uid://c0tbi4f8vqcui"
 config/features=PackedStringArray("4.5", "GL Compatibility")
 config/icon="res://icon.svg"
 
