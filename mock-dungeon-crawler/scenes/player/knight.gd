@@ -1,4 +1,5 @@
 extends RigidBody3D
+class_name Player
 @onready var animation_player: AnimationPlayer = $Knight/AnimationPlayer
 @onready var mesh_instance_3d: MeshInstance3D = $MeshInstance3D
 
@@ -18,6 +19,21 @@ var targetRotation:float;
 const ROTATION_LERP_SPEED = 0.2;
 const PLAYER_STEER_MOUSE:bool = true
 
+#damage
+signal health_changed
+
+var health : float = 1 
+
+func deal_damage(amountd):
+	health = health - amountd
+	print(health)
+	health_changed.emit(health)
+
+func heal(amountd):
+	health = health + amountd
+	if health > 1:
+		health = 1
+	health_changed.emit(health)
 
 func _ready():
 	pass
