@@ -6,9 +6,9 @@
 [ext_resource type="PackedScene" uid="uid://dev0s3klfq4pf" path="res://scenes/environment/floor/floor.tscn" id="2_w7c3h"]
 [ext_resource type="Script" uid="uid://bd046eokvcnu2" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="3_b121j"]
 [ext_resource type="PackedScene" uid="uid://yfkq4t75fea1" path="res://scenes/environment/wall/wall.tscn" id="3_w8frs"]
-[ext_resource type="PackedScene" uid="uid://7ftxxqjuxjxy" path="res://assets/environment/chest.glb" id="4_mx8sn"]
 [ext_resource type="PackedScene" uid="uid://cqlppj7jqrdv3" path="res://scenes/environment/door/door.tscn" id="8_b121j"]
 [ext_resource type="PackedScene" uid="uid://bqerhlohp8cys" path="res://scenes/environment/floor/ceiling.tscn" id="9_8c41q"]
+[ext_resource type="PackedScene" uid="uid://dxj5tjnqy3p2r" path="res://scenes/anibblechanges/chest.tscn" id="9_olg7q"]
 
 [sub_resource type="Resource" id="Resource_8c41q"]
 script = ExtResource("2_klq6b")
@@ -16,7 +16,7 @@ script = ExtResource("2_klq6b")
 [node name="Node3D" type="Node3D"]
 
 [node name="PhantomCamera3D" type="Node3D" parent="." node_paths=PackedStringArray("follow_target", "look_at_target")]
-transform = Transform3D(-0.9999999, -2.1445455e-08, 8.475162e-08, 8.881784e-16, 0.96944535, 0.24530737, -8.742279e-08, 0.24530737, -0.9694452, 2.3560946e-07, 2.6969543, -4.490058)
+transform = Transform3D(-0.9999999, 0, 0, 0, 0.96944535, 0.24530737, 0, 0.24530737, -0.9694452, 5.3051314, 2.6969543, -10.511012)
 script = ExtResource("1_2r41h")
 follow_mode = 6
 follow_target = NodePath("../Knight")
@@ -33,7 +33,7 @@ metadata/_custom_type_script = "uid://csjccrhj5wnx7"
 
 [node name="Camera3D" type="Camera3D" parent="."]
 physics_interpolation_mode = 1
-transform = Transform3D(-0.9999999, -2.1445455e-08, 8.475162e-08, 8.881784e-16, 0.96944535, 0.24530737, -8.742279e-08, 0.24530737, -0.9694452, 2.3560946e-07, 2.6969543, -4.490058)
+transform = Transform3D(-0.9999999, 0, 0, 0, 0.96944535, 0.24530737, 0, 0.24530737, -0.9694452, 5.3051314, 2.6969543, -10.511012)
 
 [node name="PhantomCameraHost" type="Node" parent="Camera3D"]
 process_priority = 300
@@ -42,14 +42,11 @@ script = ExtResource("3_b121j")
 metadata/_custom_type_script = "uid://bd046eokvcnu2"
 
 [node name="Knight" parent="." node_paths=PackedStringArray("phantom_camera_3d") instance=ExtResource("1_2q6dc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -2)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.3051314, 1, -8.020954)
 phantom_camera_3d = NodePath("../PhantomCamera3D")
 
 [node name="floor" parent="." instance=ExtResource("2_w7c3h")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, -1)
-
-[node name="chest" parent="." instance=ExtResource("4_mx8sn")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, -5)
 
 [node name="wall" parent="." instance=ExtResource("3_w8frs")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.7183552, 0, -1.4213423)
@@ -155,3 +152,6 @@ light_energy = 0.5
 [node name="Node3D" parent="." instance=ExtResource("9_8c41q")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.601994, 4.7231865, 9.311988)
 visible = false
+
+[node name="chest2" parent="." instance=ExtResource("9_olg7q")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.9919105, 0, -5.0160985)

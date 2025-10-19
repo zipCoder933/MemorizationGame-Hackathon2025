@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=3 uid="uid://dxj5tjnqy3p2r"]
+
+[ext_resource type="PackedScene" uid="uid://7ftxxqjuxjxy" path="res://assets/environment/chest.glb" id="1_8ss2b"]
+[ext_resource type="Script" uid="uid://baydtdruvkjtd" path="res://scenes/anibblechanges/chest.gd" id="2_i71qd"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_8ss2b"]
+size = Vector3(0.99990845, 0.6080322, 0.6270752)
+
+[node name="chest" instance=ExtResource("1_8ss2b")]
+script = ExtResource("2_i71qd")
+
+[node name="RigidBody3D" type="RigidBody3D" parent="." index="1"]
+contact_monitor = true
+max_contacts_reported = 1
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05317688, 0.32061768, 0.07330322)
+shape = SubResource("BoxShape3D_8ss2b")
+
+[connection signal="body_entered" from="RigidBody3D" to="." method="_on_rigid_body_3d_body_entered"]
