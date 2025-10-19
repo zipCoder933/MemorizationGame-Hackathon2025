@@ -126,3 +126,6 @@ func _input(event: InputEvent) -> void:
 func _on_body_entered(body: Node) -> void:
 	if body is Floor:
 		is_on_floor = true
+	elif body is DoorTrigger:
+		print("PLAYRE IN DOOR")
+		body.open_door(true)

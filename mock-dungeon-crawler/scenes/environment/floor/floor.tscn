@@ -17,6 +17,7 @@ uv1_triplanar = true
 [sub_resource type="BoxShape3D" id="BoxShape3D_kuqtn"]
 
 [node name="floor" type="StaticBody3D"]
+collision_layer = 2
 script = ExtResource("1_whr1e")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]

@@ -6,6 +6,7 @@
 [ext_resource type="BoxMesh" uid="uid://wboccomm4fw2" path="res://scenes/environment/wall/wall_shape.res" id="2_xe0pg"]
 
 [node name="wall" type="StaticBody3D"]
+collision_layer = 2
 script = ExtResource("1_2ktk7")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]

@@ -2,9 +2,9 @@ extends Node
 
 static var levels: Array = []
 static var seed
+
 static var start_speed
 static var goal_speed
-
 static var midgame_start_speed
 static var midgame_goal_speed
 
