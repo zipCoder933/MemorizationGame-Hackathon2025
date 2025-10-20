@@ -52,15 +52,10 @@ Procedural generation of dungeons:
 
 
 
-func wall_x(x:float, z:float, res:Resource) -> Node3D:
+func wall(x:float, z:float, res:Resource, z_axis:bool) -> Node3D:
 	var instance = res.instantiate()
-	instance.rotation.y = 0
-	add_entry(Vector3(x,0,z), instance)
-	return instance
-
-func wall_z(x:float, z:float, res:Resource) -> Node3D:
-	var instance = res.instantiate()
-	instance.rotation.y = PI/2
+	if(z_axis):
+		instance.rotation.y = PI/2
 	add_entry(Vector3(x,0,z), instance)
 	return instance
 
@@ -72,49 +67,60 @@ func removeIfSomethingHere(x:float, z:float) -> bool:
 	
 func start(x:float, z:float):
 	if removeIfSomethingHere(x, z+0.5):
-		wall_x(x, z+0.5, DOOR)
+		wall(x, z+0.5, DOOR,false)
 	else: 
-		wall_x(x, z+0.5, DOOR)
+		wall(x, z+0.5, DOOR,false)
 	
 	if removeIfSomethingHere(x+1, z+0.5):
-		wall_x(x+1, z+0.5, DOOR)
+		wall(x+1, z+0.5, DOOR,false)
 	else:
-		wall_x(x+1, z+0.5, DOOR)
+		wall(x+1, z+0.5, DOOR,false)
 	
 	if removeIfSomethingHere(x+0.5, z):
-		wall_z(x+0.5, z, DOOR)
+		wall(x+0.5, z, DOOR,true)
 	else:
-		wall_z(x+0.5, z, DOOR)
+		wall(x+0.5, z, DOOR,true)
 	
 	if removeIfSomethingHere(x+0.5, z+1):
-		wall_z(x+0.5, z+1, DOOR)
+		wall(x+0.5, z+1, DOOR,true)
 	else:
-		wall_z(x+0.5, z+1, DOOR)
+		wall(x+0.5, z+1, DOOR,true)
+
 
 func box(x:int, z:int, keepX:bool, keepZ:bool):
-	if !keepX and removeIfSomethingHere(x, z+0.5):
-		if randf() > 0.7:
-			wall_x(x, z+0.5, DOOR)
+	_place_wall(x, z + 0.5, keepX,false)
+	_place_wall(x + 1, z + 0.5, keepX,false)
+	_place_wall(x + 0.5, z, keepZ,true)
+	_place_wall(x + 0.5, z + 1, keepZ,true)
+
+func _place_wall(x: float, z: float, keep: bool, z_axis:bool) -> void:
+	var entry = get_entry(Vector3(x, 0, z))
+	if entry.size() > 0:#If there is already a wall here
+		if(keep):#If keep walls, just skip it
+			if(randf() > 0.5):#replace wall with a door
+				if(!z_axis):
+					if get_entry(Vector3(x, 0, z-1)).size() > 0 and get_entry(Vector3(x, 0, z+1)).size() > 0:#replace it with a door
+						remove_entries(Vector3(x, 0, z))
+						wall(x, z, DOOR,z_axis)
+				else:
+					if get_entry(Vector3(x-1, 0, z)).size() > 0 and get_entry(Vector3(x+1, 0, z)).size() > 0:#replace it with a door
+						remove_entries(Vector3(x, 0, z))
+						wall(x, z, DOOR,z_axis)
+		else:#Otherwise, remove the wall and add a door
+			remove_entries(Vector3(x, 0, z))
+			var wallPlaced:bool = false
+			if(z_axis):
+				if get_entry(Vector3(x, 0, z-1)).size() > 0 and get_entry(Vector3(x, 0, z+1)).size() > 0:#replace it with a door
+					wall(x, z, DOOR,z_axis)
+					wallPlaced=true
+			else:
+				if get_entry(Vector3(x-1, 0, z)).size() > 0 and get_entry(Vector3(x+1, 0, z)).size() > 0:#replace it with a door
+					wall(x, z, DOOR,z_axis)
+					wallPlaced=true
+			#if !wallPlaced and randf() > 0.8:
+				#wall(x, z, DOOR,z_axis)
 	else:
-		wall_x(x, z+0.5, WALL)
-	
-	if !keepX and removeIfSomethingHere(x+1, z+0.5):
-		if randf() > 0.7:
-			wall_x(x+1, z+0.5, DOOR)
-	else:
-		wall_x(x+1, z+0.5, WALL)
-	
-	if !keepZ and removeIfSomethingHere(x+0.5, z):
-		if randf() > 0.7:
-			wall_z(x+0.5, z, DOOR)
-	else:
-		wall_z(x+0.5, z, WALL)
-	
-	if !keepZ and removeIfSomethingHere(x+0.5, z+1):
-		if randf() > 0.7:
-			wall_z(x+0.5, z+1, DOOR)
-	else:
-		wall_z(x+0.5, z+1, WALL)
+		wall(x, z, WALL,z_axis)
 
 
 enum Direction {XPOS,XNEG,ZPOS,ZNEG}
@@ -136,7 +142,7 @@ func moveIn(place:Vector3, direction:Direction) -> Vector3:
 
 func _process(delta):
 	counter+=1
-	if(counter*delta > .5):
+	if(counter*delta > .01):
 		placePath()
 		counter = 0
 
