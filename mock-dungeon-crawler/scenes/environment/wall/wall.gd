@@ -1,6 +1,7 @@
 extends StaticBody3D
-
-#@export var wallWidth:float = 40
+class_name Wall
+const WALL_SIZE = 5
+const WALL_THICKNESS = 0.5
 #@onready var collision_shape_3d: CollisionShape3D = $CollisionShape3D
 #@onready var mesh_instance_3d: MeshInstance3D = $MeshInstance3D
 #
