@@ -52,7 +52,6 @@ metadata/_custom_type_script = "uid://csjccrhj5wnx7"
 physics_interpolation_mode = 1
 transform = Transform3D(-1, 0, 0, 0, 0.96944535, 0.24530737, 0, 0.24530737, -0.96944547, 4.9538994, 4.6969543, 1.7386091)
 visible = false
-current = true
 
 [node name="PhantomCameraHost" type="Node" parent="playerCamera"]
 process_priority = 300
@@ -71,5 +70,5 @@ mesh = SubResource("CylinderMesh_abuk1")
 surface_material_override/0 = SubResource("StandardMaterial3D_j4lbu")
 
 [node name="levelCamera" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 83.11711, 0)
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 176.44887, 0)
 current = true

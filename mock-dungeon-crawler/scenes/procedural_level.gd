@@ -93,41 +93,23 @@ func box(x:int, z:int, keepX:bool, keepZ:bool):
 	_place_wall(x + 0.5, z, keepZ,true)
 	_place_wall(x + 0.5, z + 1, keepZ,true)
 
+
+
 func _place_wall(x: float, z: float, keep: bool, z_axis:bool) -> void:
-	var entry = get_entry(Vector3(x, 0, z))
-	if entry.size() > 0:#If there is already a wall here
-		if(keep):#If keep walls, just skip it
-			if(randf() > 0.5):#replace wall with a door
-				if(!z_axis):
-					if get_entry(Vector3(x, 0, z-1)).size() > 0 and get_entry(Vector3(x, 0, z+1)).size() > 0:#replace it with a door
-						remove_entries(Vector3(x, 0, z))
-						wall(x, z, DOOR,z_axis)
-				else:
-					if get_entry(Vector3(x-1, 0, z)).size() > 0 and get_entry(Vector3(x+1, 0, z)).size() > 0:#replace it with a door
-						remove_entries(Vector3(x, 0, z))
-						wall(x, z, DOOR,z_axis)
-		else:#Otherwise, remove the wall and add a door
-			remove_entries(Vector3(x, 0, z))
-			var wallPlaced:bool = false
-			if(z_axis):
-				if get_entry(Vector3(x, 0, z-1)).size() > 0 and get_entry(Vector3(x, 0, z+1)).size() > 0:#replace it with a door
-					wall(x, z, DOOR,z_axis)
-					wallPlaced=true
-			else:
-				if get_entry(Vector3(x-1, 0, z)).size() > 0 and get_entry(Vector3(x+1, 0, z)).size() > 0:#replace it with a door
-					wall(x, z, DOOR,z_axis)
-					wallPlaced=true
-			#if !wallPlaced and randf() > 0.8:
-				#wall(x, z, DOOR,z_axis)
+	var coords = Vector3(x, 0, z)
+	var entry = get_entry(coords)
+	if entry.size() > 0:
+		if(keep):
+			pass
+		else:
+			remove_entries(coords)
 	else:
 		wall(x, z, WALL,z_axis)
 
 
 enum Direction {XPOS,XNEG,ZPOS,ZNEG}
 
-var counter:int = 0
-var searched: Dictionary = {}
-var place  = Vector3(0,0,0)
+
 
 func moveIn(place:Vector3, direction:Direction) -> Vector3:
 	if direction == Direction.XPOS:
@@ -141,29 +123,75 @@ func moveIn(place:Vector3, direction:Direction) -> Vector3:
 	return place
 
 func _process(delta):
-	counter+=1
-	if(counter*delta > .01):
-		placePath()
-		counter = 0
+	pass
 
-func placePath():
-	var direction = Direction[Direction.keys()[randi_range(0,3)]]
-	for j in range(randi_range(1,4)):
-		place = moveIn(place,direction)
+#THE MAP
+const map_start = Vector3(-50,0,-50)
+const map_end = Vector3(50,0,50)
+
+var counter:int = 0
+var searched: Dictionary = {}
+var place  = Vector3(0,0,0)
+
+func findDirectionThatPointsToTarget(end:Vector3) -> Direction:
+	#Find the direction that takes us closer to the goal
+	var distances = {
+		Direction.XPOS: moveIn(place, Direction.XPOS).distance_to(end),
+		Direction.XNEG: moveIn(place, Direction.XNEG).distance_to(end),
+		Direction.ZPOS: moveIn(place, Direction.ZPOS).distance_to(end),
+		Direction.ZNEG: moveIn(place, Direction.ZNEG).distance_to(end)
+	}
+
+	# Find the direction with the lowest distance
+	var best_dir = null
+	var best_dist = INF
+
+	for dir in distances.keys():
+		if distances[dir] < best_dist:
+			best_dist = distances[dir]
+			best_dir = dir
+	return best_dir
+
+func pathDirection(direction:Direction, length:int, setBox:bool) -> bool:
+	var madeBox = false
+	print("Moving in direction: ",direction," length: ",length)
+	for j in range(length):
+		var tPlace = moveIn(place,direction)#Move temporarily
+		print("tplace: ",tPlace)
+		var tPlace2 = moveIn(tPlace,direction)#Move again
+		var goingX = (direction == Direction.XPOS or direction == Direction.XNEG)
 		
-		if searched.has(Vector3(place)):
-			print("walls already here")
-			return
-		
-		#if searched.has(moveIn(Vector3(place),direction)):
-			#print("Walls here ahead")
-			#return
-			
-		searched[Vector3(place)] = true
-		if(direction == Direction.XPOS or direction == Direction.XNEG):
-			box(place.x,place.z,false,true)
-		else:
-			box(place.x,place.z,true,false)
+		if searched.has(Vector3i(tPlace)) or searched.has(Vector3i(tPlace2)):
+			print("We've already been here")
+			break
+		elif goingX and (get_entry(Vector3(tPlace.x + 0.5,	 0, 	tPlace.z)).size() > 0 or get_entry(Vector3(tPlace.x + 0.5, 0, 	tPlace.z + 1)).size() > 0):
+			print("Walls cannot touch")
+			break
+		elif !goingX and (get_entry(Vector3(tPlace.x, 		 0,	tPlace.z + 0.5,)).size() > 0 or get_entry(Vector3(tPlace.x + 1,	 0,	tPlace.z + 0.5)).size() > 0):
+			print("Walls cannot touch")
+			break
+		else: #Place the box
+			place = tPlace
+			searched[Vector3i(place)] = true
+			madeBox=true
+			if(setBox):
+				if(direction == Direction.XPOS or direction == Direction.XNEG):
+					print("Placed box")
+					box(place.x,place.z,false,true)
+				else:
+					print("Placed box")
+					box(place.x,place.z,true,false)
+	return madeBox
 
 func _ready():
-	start(0,0)
+	place = map_start
+	start(map_start.x,map_start.z)
+	for i in range(0,1000):
+		var direction = Direction[Direction.keys()[randi_range(0,3)]]#random
+		if randf() > 0.2: #towards goal
+			direction = findDirectionThatPointsToTarget(map_end)
+		pathDirection(direction,randi_range(1,5),true)
+		
+		#if !pathDirection(Direction.XPOS,1,false) and !pathDirection(Direction.XNEG,1,false) and !pathDirection(Direction.ZPOS,1,false) and !pathDirection(Direction.XNEG,1,false):
+			#print("No more moves")
+			#return
