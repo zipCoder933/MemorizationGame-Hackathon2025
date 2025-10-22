@@ -1,7 +1,6 @@
-[gd_scene load_steps=11 format=3 uid="uid://bjt0ye3k87c0y"]
+[gd_scene load_steps=10 format=3 uid="uid://bjt0ye3k87c0y"]
 
 [ext_resource type="Script" uid="uid://d4bg7reyghg1r" path="res://scenes/procedural_level.gd" id="1_heori"]
-[ext_resource type="PackedScene" uid="uid://dev0s3klfq4pf" path="res://scenes/environment/floor/floor.tscn" id="2_ca1qn"]
 [ext_resource type="PackedScene" uid="uid://br55osxcgub3i" path="res://scenes/player/knight.tscn" id="3_u8fp7"]
 [ext_resource type="Script" uid="uid://csjccrhj5wnx7" path="res://addons/phantom_camera/scripts/phantom_camera/phantom_camera_3d.gd" id="4_yn40h"]
 [ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="5_j4lbu"]
@@ -21,17 +20,15 @@ albedo_color = Color(0, 0.37962547, 0.6065104, 1)
 [node name="ProceduralLevel" type="Node3D"]
 script = ExtResource("1_heori")
 
-[node name="floor" parent="." instance=ExtResource("2_ca1qn")]
-
 [node name="Knight" parent="." node_paths=PackedStringArray("phantom_camera_3d") instance=ExtResource("3_u8fp7")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.9538994, 3, 4.2286673)
 phantom_camera_3d = NodePath("../PhantomCamera3D")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(0.8525216, 0.41555533, -0.31704998, 0, 0.6065713, 0.79502904, 0.522692, -0.67777944, 0.5171152, 0, 4.135083, 0)
+transform = Transform3D(0.8525216, 0.41555533, -0.31705, 0, 0.6065713, 0.79502904, 0.522692, -0.67777944, 0.5171152, 0, 11.5426855, 0)
 
 [node name="DirectionalLight3D2" type="DirectionalLight3D" parent="."]
-transform = Transform3D(0.8525216, -0.431615, 0.2948143, 0, -0.5640306, -0.8257539, 0.522692, 0.70397305, -0.48084825, 0, 4.135083, 0)
+transform = Transform3D(0.8525216, -0.431615, 0.2948143, 0, -0.5640306, -0.8257539, 0.522692, 0.70397305, -0.48084825, 0, 11.5426855, 0)
 
 [node name="PhantomCamera3D" type="Node3D" parent="." node_paths=PackedStringArray("follow_target")]
 transform = Transform3D(-1, 0, 0, 0, 0.96944535, 0.24530737, 0, 0.24530737, -0.96944547, 4.9538994, 4.6969543, 1.7386091)
@@ -51,7 +48,6 @@ metadata/_custom_type_script = "uid://csjccrhj5wnx7"
 [node name="playerCamera" type="Camera3D" parent="."]
 physics_interpolation_mode = 1
 transform = Transform3D(-1, 0, 0, 0, 0.96944535, 0.24530737, 0, 0.24530737, -0.96944547, 4.9538994, 4.6969543, 1.7386091)
-current = true
 
 [node name="PhantomCameraHost" type="Node" parent="playerCamera"]
 process_priority = 300
@@ -71,3 +67,4 @@ surface_material_override/0 = SubResource("StandardMaterial3D_j4lbu")
 
 [node name="levelCamera" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 176.44887, 0)
+current = true

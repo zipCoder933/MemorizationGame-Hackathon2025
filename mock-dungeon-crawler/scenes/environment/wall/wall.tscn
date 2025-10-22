@@ -20,4 +20,5 @@ surface_material_override/0 = ExtResource("1_wykyb")
 
 [node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
 transform = Transform3D(4.1263666, 0, 0, 0, 0.89685285, 0, 0, 0, 0.89685285, 1.5297732, 2.0224004, 0)
+visible = false
 mesh = ExtResource("2_xe0pg")
