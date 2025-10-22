@@ -17,3 +17,7 @@ shape = ExtResource("2_brirp")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0)
 mesh = ExtResource("2_xe0pg")
 surface_material_override/0 = ExtResource("1_wykyb")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+transform = Transform3D(4.1263666, 0, 0, 0, 0.89685285, 0, 0, 0, 0.89685285, 1.5297732, 2.0224004, 0)
+mesh = ExtResource("2_xe0pg")

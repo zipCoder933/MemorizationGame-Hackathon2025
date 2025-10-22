@@ -65,26 +65,37 @@ func box(x:int, z:int, keepX:bool, keepZ:bool, addDoors:bool):
 	_place_wall(x + 0.5, z, true, keepZ,addDoors)
 	_place_wall(x + 0.5, z + 1, true, keepZ,addDoors)
 	
-#func arena(x: float, y: float, width: int, height: int, point_Z_axis: bool):
-	#var dx = 1 if point_Z_axis else 0
-	#var dy = 0 if point_Z_axis else 1
-	#
-	## Top and bottom walls
-	#for i in range(width):
-		#_place_wall(x + i * dx, y + i * dy - 0.5, true, not point_Z_axis)  # Top wall
-		#_place_wall(x + i * dx, y + i * dy + height - 0.5,true, not point_Z_axis)  # Bottom wall
-#
-	## Left and right walls
-	#for j in range(height):
-		#_place_wall(x - 0.5, y + j,true, point_Z_axis)  # Left wall
-		#_place_wall(x + width - 0.5, y + j,true, point_Z_axis)  # Right wall
+func arena(x: int, z: int, x_radius: int, z_radius: int, direction: Direction):
+	var final = moveIn(Vector3(x,0,z),direction)
+	x = final.x;
+	z = final.z;
+	
+	if direction == Direction.ZPOS:
+		for ox in range(x-z_radius,x+z_radius+1):#Spread out
+			for oz in range(z,z+(x_radius * 2)+1):#forward
+				box(ox,oz,false,false, false)
+		wall(x + 0.5, z, DOOR, true)
+	elif direction == Direction.ZNEG:
+		for ox in range(x-z_radius,x+z_radius+1):#Spread out
+			for oz in range(z-(x_radius * 2), z+1):#forward
+				box(ox,oz,false,false, false)
+		wall(x + 0.5, z + 1, DOOR, true)
+	elif direction == Direction.XNEG:
+		for oz in range(z-z_radius,z+z_radius+1):#Spread out
+			for ox in range(x-(x_radius * 2), x+1):#forward
+				box(ox,oz,false,false, false)
+		wall(x + 1, z + 0.5,DOOR, false)
+	else:
+		for oz in range(z-z_radius,z+z_radius+1):#Spread out
+			for ox in range(x,x+(x_radius * 2)+1):#forward
+				box(ox,oz,false,false, false)
+		wall(x, z + 0.5, DOOR,false)
 
-
-func _place_wall(x: float, z: float, z_axis:bool, keepWallsInAxis: bool=true, addDoors:bool = false) -> void:
+func _place_wall(x: float, z: float, z_axis:bool, keepExistingWalls: bool=true, addDoors:bool = false) -> void:
 	var coords = Vector3(x, 0, z)
 	var entry = get_entry(coords)
 	if entry.size() > 0:
-		if(!keepWallsInAxis):
+		if(!keepExistingWalls):
 			remove_entries(coords)
 			if(addDoors):
 				wall(x, z, DOOR,z_axis)
@@ -165,7 +176,7 @@ func path(path_start:Vector3, path_end:Vector3, max_failures:int, randomness:flo
 	place = path_start
 	var stepsTaken = 0
 	var failures = 0
-	
+	var lastDirection = Direction.XPOS
 
 	for i in range(0, 100000):
 		var direction = Direction[Direction.keys()[randi_range(0,3)]]#random
@@ -174,22 +185,27 @@ func path(path_start:Vector3, path_end:Vector3, max_failures:int, randomness:flo
 		var placeDoors = true #Always place a door at the beginning of a path
 		if(i > 0):
 			placeDoors = randf() > 0.5
+		if(place.is_equal_approx(path_end)):
+			break;
 		if pathDirection(direction,randi_range(1,5), true, placeDoors):
+			lastDirection = direction
 			stepsTaken +=1
 			failures = 0
 		else:
 			failures += 1
 			if(failures > max_failures):#If we already failed X times in a row, we can quit early
 				break
+	
+	arena(place.x,place.z, 2,2, lastDirection)
 	return stepsTaken
 
 func _ready():
 	var start_pos = Vector3(-50,0,-50)
 	box(start_pos.x, start_pos.z, true, true, false)
+	#arena(start_pos.x,start_pos.z, 2,2, Direction.XNEG)
 	print("MAIN: ", path(start_pos, Vector3(20,0,20),25,0))
-	#arena(place.x,place.z, true, 3,3)
-	#
-	for i in range(0,100):
+	
+	for i in range(0,3):
 		place = searched.keys()[randi_range(0,searched.keys().size()-1)]
 		var steps = path(place, Vector3(randi_range(-50,50),0,randi_range(-50,50)),25,0)
 		print("BRANCH: ", steps)

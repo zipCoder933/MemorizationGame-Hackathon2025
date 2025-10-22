@@ -72,6 +72,7 @@ jump={
 [physics]
 
 3d/default_gravity=18.799999999999997
+common/physics_interpolation=true
 
 [rendering]
 
