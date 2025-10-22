@@ -59,23 +59,37 @@ func wall(x:float, z:float, res:Resource, z_axis:bool) -> Node3D:
 	add_entry(Vector3(x,0,z), instance)
 	return instance
 
-func box(x:int, z:int, keepX:bool, keepZ:bool):
-	_place_wall(x, z + 0.5, keepX,false)
-	_place_wall(x + 1, z + 0.5, keepX,false)
-	_place_wall(x + 0.5, z, keepZ,true)
-	_place_wall(x + 0.5, z + 1, keepZ,true)
+func box(x:int, z:int, keepX:bool, keepZ:bool, addDoors:bool):
+	_place_wall(x, z + 0.5, false, keepX,addDoors)
+	_place_wall(x + 1, z + 0.5, false, keepX,addDoors)
+	_place_wall(x + 0.5, z, true, keepZ,addDoors)
+	_place_wall(x + 0.5, z + 1, true, keepZ,addDoors)
+	
+#func arena(x: float, y: float, width: int, height: int, point_Z_axis: bool):
+	#var dx = 1 if point_Z_axis else 0
+	#var dy = 0 if point_Z_axis else 1
+	#
+	## Top and bottom walls
+	#for i in range(width):
+		#_place_wall(x + i * dx, y + i * dy - 0.5, true, not point_Z_axis)  # Top wall
+		#_place_wall(x + i * dx, y + i * dy + height - 0.5,true, not point_Z_axis)  # Bottom wall
+#
+	## Left and right walls
+	#for j in range(height):
+		#_place_wall(x - 0.5, y + j,true, point_Z_axis)  # Left wall
+		#_place_wall(x + width - 0.5, y + j,true, point_Z_axis)  # Right wall
 
-func _place_wall(x: float, z: float, keep: bool, z_axis:bool) -> void:
+
+func _place_wall(x: float, z: float, z_axis:bool, keepWallsInAxis: bool=true, addDoors:bool = false) -> void:
 	var coords = Vector3(x, 0, z)
 	var entry = get_entry(coords)
 	if entry.size() > 0:
-		if(!keep):
+		if(!keepWallsInAxis):
 			remove_entries(coords)
-			if(randf() > 0.9):
+			if(addDoors):
 				wall(x, z, DOOR,z_axis)
 	else:
 		wall(x, z, WALL,z_axis)
-
 
 enum Direction {XPOS,XNEG,ZPOS,ZNEG}
 
@@ -121,7 +135,7 @@ func findDirectionThatPointsToTarget(end:Vector3) -> Direction:
 			best_dir = dir
 	return best_dir
 
-func pathDirection(direction:Direction, length:int, setBox:bool) -> bool:
+func pathDirection(direction:Direction, length:int, setBox:bool, placeDoors:bool) -> bool:
 	var madeBox = false
 	for j in range(length):
 		var tPlace = moveIn(place,direction)#Move temporarily
@@ -138,25 +152,29 @@ func pathDirection(direction:Direction, length:int, setBox:bool) -> bool:
 			place = tPlace
 			searched[Vector3i(place)] = true
 			madeBox=true
+			if(j > 0): #We will never need a door mid-path
+				placeDoors = false
 			if(setBox):
 				if(direction == Direction.XPOS or direction == Direction.XNEG):
-					box(place.x,place.z,false,true)
+					box(place.x,place.z,false,false,placeDoors)
 				else:
-					box(place.x,place.z,true,false)
+					box(place.x,place.z,false,false,placeDoors)
 	return madeBox
 
 func path(path_start:Vector3, path_end:Vector3, max_failures:int, randomness:float) -> int:
 	place = path_start
 	var stepsTaken = 0
 	var failures = 0
-	box(place.x, place.z,true,true)
 	
-	
+
 	for i in range(0, 100000):
 		var direction = Direction[Direction.keys()[randi_range(0,3)]]#random
 		if randf() > randomness: #towards goal
 			direction = findDirectionThatPointsToTarget(path_end)
-		if pathDirection(direction,randi_range(1,5),true):
+		var placeDoors = true #Always place a door at the beginning of a path
+		if(i > 0):
+			placeDoors = randf() > 0.5
+		if pathDirection(direction,randi_range(1,5), true, placeDoors):
 			stepsTaken +=1
 			failures = 0
 		else:
@@ -166,9 +184,12 @@ func path(path_start:Vector3, path_end:Vector3, max_failures:int, randomness:flo
 	return stepsTaken
 
 func _ready():
-	print("MAIN: ", path(Vector3(-50,0,-50), Vector3(50,0,50),25,0))
-	
-	for i in range(0,200):
+	var start_pos = Vector3(-50,0,-50)
+	box(start_pos.x, start_pos.z, true, true, false)
+	print("MAIN: ", path(start_pos, Vector3(20,0,20),25,0))
+	#arena(place.x,place.z, true, 3,3)
+	#
+	for i in range(0,100):
 		place = searched.keys()[randi_range(0,searched.keys().size()-1)]
 		var steps = path(place, Vector3(randi_range(-50,50),0,randi_range(-50,50)),25,0)
 		print("BRANCH: ", steps)
