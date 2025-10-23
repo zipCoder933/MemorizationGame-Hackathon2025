@@ -75,7 +75,6 @@ func box(x:int, z:int, keepX:bool, keepZ:bool, addDoors:bool):
 	_place_wall(x + 1, z + 0.5, Direction.XNEG, keepX,addDoors)
 	_place_wall(x + 0.5, z, Direction.ZPOS, keepZ,addDoors)
 	_place_wall(x + 0.5, z + 1, Direction.ZNEG, keepZ,addDoors)
-	#add_entry(Vector3(x+0.5,0,z+0.5), FLOOR.instantiate())
 	
 	searched[Vector3i(x,0,z)] = true #ADD NEW ENRTY
 
@@ -202,37 +201,55 @@ func findDirectionThatPointsToTarget(end:Vector3) -> Direction:
 			best_dir = dir
 	return best_dir
 
-func pathDirection(direction:Direction, length:int, setBox:bool, placeDoors:bool) -> bool:
+class PathStep:
+	func _init(path2, door2):
+		path_pos = path2;
+		placeDoor = door2
+	
+	var path_pos:Vector3i;
+	var placeDoor:bool;
+
+func alreadyPathHere(path_steps:Array[PathStep],target_pos:Vector3i) -> bool:
+	if searched.has(Vector3i(target_pos)):
+		return true
+	for step in path_steps:
+		if step.path_pos == target_pos:
+			return true
+	return false
+
+func pathDirection(direction:Direction, length:int, placeDoors:bool, idea_path) -> bool:
 	var madeBox = false
 	for j in range(length):
 		var tPlace = moveIn(place,direction)#Move temporarily
 		var tPlace2 = moveIn(tPlace,direction)#Move again
 		var goingX = (direction == Direction.XPOS or direction == Direction.XNEG)
 		
-		if searched.has(Vector3i(tPlace)) or searched.has(Vector3i(tPlace2)):
+		if alreadyPathHere(idea_path,Vector3i(tPlace)) or\
+			alreadyPathHere(idea_path,Vector3i(tPlace2)):
 			break
-		elif goingX and (get_entry(Vector3(tPlace.x + 0.5,	 0, 	tPlace.z)).size() > 0 or get_entry(Vector3(tPlace.x + 0.5, 0, 	tPlace.z + 1)).size() > 0):
+		elif goingX and\
+		  (alreadyPathHere(idea_path,Vector3i(tPlace.x,tPlace.y,tPlace.z+1)) or\
+		  alreadyPathHere(idea_path,Vector3i(tPlace.x,tPlace.y,tPlace.z-1))):
 			break
-		elif !goingX and (get_entry(Vector3(tPlace.x, 		 0,	tPlace.z + 0.5,)).size() > 0 or get_entry(Vector3(tPlace.x + 1,	 0,	tPlace.z + 0.5)).size() > 0):
+		elif !goingX and\
+		 (alreadyPathHere(idea_path,Vector3i(tPlace.x+1,tPlace.y,tPlace.z)) or\
+		  alreadyPathHere(idea_path,Vector3i(tPlace.x-1,tPlace.y,tPlace.z))):
 			break
 		else: #Place the box
 			place = tPlace
 			madeBox=true
 			if(j > 0): #We will never need a door mid-path
 				placeDoors = false
-			if(setBox):
-				if(direction == Direction.XPOS or direction == Direction.XNEG):
-					box(place.x,place.z,false,false,placeDoors)
-				else:
-					box(place.x,place.z,false,false,placeDoors)
+			idea_path.append(PathStep.new(Vector3i(place),placeDoors))
 	return madeBox
 
-func path(path_start:Vector3, path_end:Vector3, max_failures:int, arenaSize:int) -> int:
+func path(path_start:Vector3, path_end:Vector3, max_failures:int, arenaSize:int, failedLevelSurvival:float) -> int:
 	place = path_start
 	var stepsTaken = 0
 	var failures = 0
 	var lastSuccesfullDirection = Direction.XPOS
 	var lastDirection = Direction.XPOS
+	var idea_path:Array[PathStep]
 
 	for i in range(0, 100000):
 		var direction = findDirectionThatPointsToTarget(path_end)
@@ -246,7 +263,7 @@ func path(path_start:Vector3, path_end:Vector3, max_failures:int, arenaSize:int)
 			placeDoors = randf() > 0.5
 		if(place.is_equal_approx(path_end)):
 			break;
-		if pathDirection(direction,randi_range(1,5), true, placeDoors):
+		if pathDirection(direction,randi_range(1,4),placeDoors,idea_path):
 			lastSuccesfullDirection = direction
 			stepsTaken +=1
 			failures = 0
@@ -258,9 +275,14 @@ func path(path_start:Vector3, path_end:Vector3, max_failures:int, arenaSize:int)
 		elif(place.distance_to(path_end) < CLOSENESS_TO_END_PATH_END):
 			break
 	
-	#Only place the arena if we didnt fail
-	if(stepsTaken > 0 and failures < max_failures and arena(place.x,place.z, arenaSize,arenaSize, lastSuccesfullDirection, true)):
-		arena(place.x,place.z, arenaSize,arenaSize, lastSuccesfullDirection, false)
+	#Actually put downt the boxes
+	if(failures < max_failures or randf() < failedLevelSurvival):
+		for step in idea_path:
+			box(step.path_pos.x,step.path_pos.z,false,false,step.placeDoor)
+		
+		#Only place the arena if we didnt fail
+		if(stepsTaken > 0 and failures < max_failures and arena(place.x,place.z, arenaSize,arenaSize, lastSuccesfullDirection, true)):
+			arena(place.x,place.z, arenaSize,arenaSize, lastSuccesfullDirection, false)
 	
 	return stepsTaken
 
@@ -272,7 +294,7 @@ func _ready():
 	var start_pos = Vector3(-50,0,-50)
 	box(start_pos.x, start_pos.z, true, true, false)
 	#arena(start_pos.x-2,start_pos.z, 1,1, Direction.XPOS, false)
-	print("MAIN: ", path(start_pos, Vector3(20,0,20),25,arenaSize+2))
+	print("MAIN: ", path(start_pos, Vector3(20,0,20),25,arenaSize+2, 1))
 	
 	for i in range(0,100):
 		place = searched.keys()[randi_range(0,searched.keys().size()-1)]
@@ -280,7 +302,7 @@ func _ready():
 		var length = randi_range(5,50)
 		var end_pls:Vector3 = (Vector3(place) + direction * length)
 		if is_area_clear(end_pls.x, end_pls.z, (arenaSize) + CLOSENESS_TO_END_PATH_END + 2):
-			var steps = path(place, end_pls, 25, arenaSize)
+			var steps = path(place, end_pls, 25, arenaSize, 0.2)
 
 	_place_floors(searched, 250)
 
