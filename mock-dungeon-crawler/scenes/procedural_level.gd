@@ -75,9 +75,9 @@ func box(x:int, z:int, keepX:bool, keepZ:bool, addDoors:bool):
 	_place_wall(x + 1, z + 0.5, Direction.XNEG, keepX,addDoors)
 	_place_wall(x + 0.5, z, Direction.ZPOS, keepZ,addDoors)
 	_place_wall(x + 0.5, z + 1, Direction.ZNEG, keepZ,addDoors)
-	#add_entry(Vector3(x,0,z), FLOOR.instantiate())
+	#add_entry(Vector3(x+0.5,0,z+0.5), FLOOR.instantiate())
 	
-	searched[Vector3i(x+0.5,0,z+0.5)] = true #ADD NEW ENRTY
+	searched[Vector3i(x,0,z)] = true #ADD NEW ENRTY
 
 func is_area_clear(x: int, z: int, radius: int) -> bool:
 	for dx in range(-radius, radius + 1):
@@ -227,7 +227,7 @@ func pathDirection(direction:Direction, length:int, setBox:bool, placeDoors:bool
 					box(place.x,place.z,false,false,placeDoors)
 	return madeBox
 
-func path(path_start:Vector3, path_end:Vector3, max_failures:int, randomness:float, arenaSize:int) -> int:
+func path(path_start:Vector3, path_end:Vector3, max_failures:int, arenaSize:int) -> int:
 	place = path_start
 	var stepsTaken = 0
 	var failures = 0
@@ -236,7 +236,7 @@ func path(path_start:Vector3, path_end:Vector3, max_failures:int, randomness:flo
 
 	for i in range(0, 100000):
 		var direction = findDirectionThatPointsToTarget(path_end)
-		if randf() < randomness or failures > 0:
+		if failures > 0:
 			direction = Direction[Direction.keys()[randi_range(0,3)]]#random
 			
 		lastDirection = direction
@@ -272,7 +272,7 @@ func _ready():
 	var start_pos = Vector3(-50,0,-50)
 	box(start_pos.x, start_pos.z, true, true, false)
 	#arena(start_pos.x-2,start_pos.z, 1,1, Direction.XPOS, false)
-	print("MAIN: ", path(start_pos, Vector3(20,0,20),25,0,arenaSize+2))
+	print("MAIN: ", path(start_pos, Vector3(20,0,20),25,arenaSize+2))
 	
 	for i in range(0,100):
 		place = searched.keys()[randi_range(0,searched.keys().size()-1)]
@@ -280,4 +280,61 @@ func _ready():
 		var length = randi_range(5,50)
 		var end_pls:Vector3 = (Vector3(place) + direction * length)
 		if is_area_clear(end_pls.x, end_pls.z, (arenaSize) + CLOSENESS_TO_END_PATH_END + 2):
-			var steps = path(place, end_pls, 25,0, arenaSize)
+			var steps = path(place, end_pls, 25, arenaSize)
+
+	_place_floors(searched, 250)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#FLOORS =========================================================
+func _place_floors(floor_map: Dictionary, floor_size: int = 500) -> void:
+	if floor_map.is_empty():
+		return
+	
+	# Find the min and max bounds of all true entries
+	var min_x = INF
+	var max_x = -INF
+	var min_z = INF
+	var max_z = -INF
+	
+	for key in floor_map.keys():
+		var coords2 = _format_vec3(key)
+		if not floor_map[key]:
+			continue
+		min_x = min(min_x, coords2.x)
+		max_x = max(max_x, coords2.x)
+		min_z = min(min_z, coords2.z)
+		max_z = max(max_z, coords2.z)
+	
+	# Now iterate the bounding area in steps of floor_size (cell units × floor_size)
+	for x in range(min_x, max_x + 1 + floor_size, floor_size):
+		for z in range(min_z, max_z + 1 + floor_size, floor_size):
+				var instance = FLOOR.instantiate()
+				instance.position.x = x;
+				instance.position.z = z
+				add_child(instance)

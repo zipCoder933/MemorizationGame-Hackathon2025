@@ -7,6 +7,7 @@
 
 [node name="wall" type="StaticBody3D"]
 collision_layer = 2
+collision_mask = 3
 script = ExtResource("1_2ktk7")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]

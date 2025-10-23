@@ -29,6 +29,7 @@ follow_distance = 2.78
 vertical_rotation_offset = 0.2478367537831946
 horizontal_rotation_offset = 3.141592653589793
 spring_length = 2.78
+collision_mask = 3
 metadata/_custom_type_script = "uid://csjccrhj5wnx7"
 
 [node name="Camera3D" type="Camera3D" parent="."]

@@ -43,6 +43,7 @@ follow_distance = 2.78
 vertical_rotation_offset = 0.2478367537831946
 horizontal_rotation_offset = 3.141592653589793
 spring_length = 2.78
+collision_mask = 3
 metadata/_custom_type_script = "uid://csjccrhj5wnx7"
 
 [node name="playerCamera" type="Camera3D" parent="."]
@@ -67,4 +68,3 @@ surface_material_override/0 = SubResource("StandardMaterial3D_j4lbu")
 
 [node name="levelCamera" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 176.44887, 0)
-current = true
